@@ -31,10 +31,16 @@
     const canvas = document.getElementById("gameveld");
     const ctx    = canvas.getContext("2d");
 
+    let v1_position_x = 120;
+    let move_speed = 5;
+
   canvas.width = 800;         canvas.height = 500;
 
-    ctx.fillStyle = "blue";
+    ctx.fillStyle = "#36486b";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.fillStyle = "#3B6B71";
+    ctx.fillRect(0, canvas.height-50, 800, 50);
 
     class vierkant {
         constructor(px, py, pzijde, pc) {
@@ -55,12 +61,14 @@
         }
     }
 
-    v1 = new vierkant(120, canvas.height-100, 30, "lightgreen");
+    v1 = new vierkant(120, canvas.height-80, 30, "lightgreen");
     v1.tekenJezelf();
 
-    function animate() {
-        v1.tekenJezelf();
+    function draw() {
+       v1_position_x += move_speed;
     }
+
+    setInterval(draw, 50)
 
 </script>
 </html>

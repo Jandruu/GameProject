@@ -36,5 +36,31 @@
     ctx.fillStyle = "blue";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+    class vierkant {
+        constructor(px, py, pzijde, pc) {
+            this.x = px;
+            this.y = py;
+            this.width = pzijde;
+            this.height = pzijde;
+            this.color = pc;
+        }
+
+        tekenJezelf(){
+            ctx.fillStyle = this.color;
+            ctx.fillRect(
+                this.x,
+                this.y,
+                this.width,
+                this.height);
+        }
+    }
+
+    v1 = new vierkant(120, canvas.height-100, 30, "lightgreen");
+    v1.tekenJezelf();
+
+    function animate() {
+        v1.tekenJezelf();
+    }
+
 </script>
 </html>

@@ -20,7 +20,7 @@
 
 
 </style>
-<body>
+<body onload="startGame()">
 
 <canvas id="gameveld">
 </canvas>
@@ -31,24 +31,39 @@
     const canvas = document.getElementById("gameveld");
     const ctx    = canvas.getContext("2d");
 
-    let v1_position_x = 120;
-    let move_speed = 5;
 
-  canvas.width = 800;         canvas.height = 500;
+    canvas.width = 800;         canvas.height = 500;
 
     ctx.fillStyle = "#36486b";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    ctx.fillStyle = "#3B6B71";
-    ctx.fillRect(0, canvas.height-50, 800, 50);
-
-    class vierkant {
+    class Vierkant {
         constructor(px, py, pzijde, pc) {
             this.x = px;
             this.y = py;
             this.width = pzijde;
             this.height = pzijde;
             this.color = pc;
+
+            this.dx = 2;
+
+            this.move = true;
+        }
+
+        colission(other) {
+            if (this.x > other.y - this.height) {
+                this.move = false;
+            }
+        }
+
+        update() {
+            if (this.move) {
+                this.x += this.dx;
+
+                if (this.x < 0 || this.y > canvas.height) {
+                    this.dx = -this.dx;
+                }
+            }
         }
 
         tekenJezelf(){
@@ -61,14 +76,22 @@
         }
     }
 
-    v1 = new vierkant(120, canvas.height-80, 30, "lightgreen");
+    v1 = new Vierkant(120, canvas.height-80, 30, "#08ecd0");
     v1.tekenJezelf();
 
-    function draw() {
-       v1_position_x += move_speed;
+    function animate() {
+        ctx.fillStyle = "#36486b";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "#3B6B71";
+        ctx.fillRect(0, canvas.height-50, 800, 50);
+        requestAnimationFrame(animate);
+        v1.tekenJezelf();
+        v1.update();
+        v1.colission();
+
     }
 
-    setInterval(draw, 50)
+    animate();
 
 </script>
 </html>

@@ -20,7 +20,7 @@
 
 
 </style>
-<body onload="startGame()">
+<body>
 
 <canvas id="gameveld">
 </canvas>
@@ -37,6 +37,10 @@
     ctx.fillStyle = "#36486b";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+
+    let animationFrameId;
+
+
     class Vierkant {
         constructor(px, py, pzijde, pc) {
             this.x = px;
@@ -44,28 +48,46 @@
             this.width = pzijde;
             this.height = pzijde;
             this.color = pc;
-
-            this.dx = 2;
-
-            this.move = true;
+            this.jumpheight =30;
+            this.shouldJump = false;
+            this.jumpcounter = 0;
+            this.isGameOver = false;
         }
 
-        colission(other) {
-            if (this.x > other.y - this.height) {
-                this.move = false;
-            }
-        }
-
-        update() {
-            if (this.move) {
-                this.x += this.dx;
-
-                if (this.x < 0 || this.y > canvas.height) {
-                    this.dx = -this.dx;
+        checkCollision() {
+            for (let i = 0; i < obstacles.length; i++) {
+                if (this.x < obstacles[i].x + obstacles[i].width &&
+                    this.x + this.width > obstacles[i].x &&
+                    this.y < obstacles[i].y + obstacles[i].height &&
+                    this.y + this.height > obstacles[i].y) {
+                    this.isGameOver = true;
                 }
             }
         }
 
+        moveForward() {
+            this.x += 3;
+            if(this.x > canvas.width) {
+                this.x = 0;
+            }
+        }
+
+        jump() {
+            if(this.shouldJump){
+                this.jumpcounter++;
+                if(this.jumpcounter < 15){
+                    this.y -= this.jumpheight;
+                }else if(this.jumpcounter > 14 && this.jumpcounter < 19){
+                    this.y += 0;
+                }else if(this.jumpcounter < 33){
+                    this.y += this.jumpheight;
+                }
+                if(this.jumpcounter >= 32){
+                    this.jumpcounter = 0;
+                    this.shouldJump = false;
+                }
+            }
+        }
         tekenJezelf(){
             ctx.fillStyle = this.color;
             ctx.fillRect(
@@ -73,25 +95,44 @@
                 this.y,
                 this.width,
                 this.height);
+            this.jump();
         }
     }
+    let obstacles = [    {x: 200, y: canvas.height-80, width: 30, height: 30},    {x: 400, y: canvas.height-80, width: 30, height: 30},    {x: 600, y: canvas.height-80, width: 30, height: 30}];
 
-    v1 = new Vierkant(120, canvas.height-80, 30, "#08ecd0");
-    v1.tekenJezelf();
+    v1 = new Vierkant(20, canvas.height-80, 30, "#08ecd0");
 
     function animate() {
         ctx.fillStyle = "#36486b";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = "#3B6B71";
-        ctx.fillRect(0, canvas.height-50, 800, 50);
-        requestAnimationFrame(animate);
+        ctx.fillRect(0, canvas.height - 50, 800, 50);
+        v1.moveForward();
         v1.tekenJezelf();
-        v1.update();
-        v1.colission();
-
+        v1.checkCollision();
+        for (let i = 0; i < obstacles.length; i++) {
+            ctx.fillStyle = "gray";
+            ctx.fillRect(obstacles[i].x, obstacles[i].y, obstacles[i].width, obstacles[i].height);
+        }
+        if (!v1.isGameOver) {
+            animationFrameId = requestAnimationFrame(animate);
+        } else {
+            cancelAnimationFrame(animationFrameId);
+            ctx.fillStyle = "black";
+            ctx.font = "30px Arial";
+            ctx.fillText("Game Over", canvas.width/2 - 50, canvas.height/2);
+        }
     }
 
     animate();
 
+    addEventListener("keydown", e => {
+        if(e.code === 'Space'){
+            v1.shouldJump = true;
+        }
+    });
+
 </script>
+
+
 </html>

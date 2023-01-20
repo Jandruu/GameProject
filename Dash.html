@@ -18,13 +18,18 @@
         transform: translate(-50%, -50%);
     }
 
+    #score-field{
+        width: 100%;
+        text-align: center;
+        font-size: 35px;
+    }
 
 </style>
 <body>
 
 <canvas id="gameveld">
 </canvas>
-
+<p id="score-field">Score: 0</p>
 </body>
 <script>
 
@@ -39,6 +44,7 @@
 
 
     let animationFrameId;
+    let score = 0;
 
 
     class Vierkant {
@@ -69,6 +75,8 @@
             this.x += 3;
             if(this.x > canvas.width) {
                 this.x = 0;
+                score += 10;
+                document.getElementById("score-field").innerHTML = "Score: " + score;
             }
         }
 
